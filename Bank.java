@@ -22,25 +22,53 @@ public class Bank {
         this.phone = phone;
     }
 
-    public void setData() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your name: ");
-        name = sc.nextLine();
-        System.out.println("Enter your phone number: ");
-        phone = sc.nextLong();
-        System.out.println("Enter your address: ");
-        sc.nextLine();
-        address = sc.nextLine();
-        System.out.println("Enter your age: ");
-        age = sc.nextInt();
-        System.out.println("Enter your account type: ");
-        accountType = sc.next().charAt(0);
-        System.out.println("Enter your balance: ");
-        balance = sc.nextDouble();
-        sc.close();
+    private boolean isValidPhoneNumber(long phone) {
+        int counter = 0;
+        while (phone != 0) {
+            counter++;
+            phone /= 10;
+        }
+        if (counter == 10)
+            return true;
+        else
+            return false;
     }
 
-    public void getData() {
+    private boolean setData() {
+        Scanner sc = new Scanner(System.in);
+        boolean flag = true;
+
+        System.out.print("Enter your name: ");
+        name = sc.nextLine();
+
+        System.out.print("Enter your phone number: ");
+        do {
+            phone = sc.nextLong();
+            if (!this.isValidPhoneNumber(phone))
+                System.out.println("Invalid phone number! Enter again.");
+            else
+                break;
+        } while (true);
+
+        System.out.print("Enter your address: ");
+        sc.nextLine();
+
+        address = sc.nextLine();
+
+        System.out.print("Enter your age: ");
+        age = sc.nextInt();
+
+        System.out.print("Enter your account type: ");
+        accountType = sc.next().charAt(0);
+
+        System.out.print("Enter your balance: ");
+        balance = sc.nextDouble();
+
+        sc.close();
+        return flag;
+    }
+
+    private void getData() {
         System.out.println("Name: " + name);
         System.out.println("Age: " + age);
         System.out.println("Phone Number: " + phone);
@@ -49,9 +77,20 @@ public class Bank {
         System.out.println("Account balance: " + balance);
     }
 
+    private boolean createAccount() {
+        System.out.println("Enter User Details:");
+        if (this.setData())
+            return false;
+        else
+            return true;
+    }
+
     public static void main(String[] args) {
         Bank bank = new Bank();
-        bank.setData();
+        if (bank.createAccount())
+            System.out.println("New Account created successfully.");
+        else
+            System.out.println("Error in creating account! Try again later.");
         bank.getData();
     }
 }
