@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-import javax.lang.model.util.ElementScanner14;
-
 public class Bank {
     private String name, address;
     private double balance;
@@ -119,13 +117,56 @@ public class Bank {
 
     private int update() {
         int flag = 1;
+        System.out.println("Enter the details to be updated");
+        System.out.println("1: Name");
+        System.out.println("2: Age");
+        System.out.println("3: Phone Number");
+        System.out.println("4: User Address");
+        System.out.println("More than 1? (y/n)");
+
+        Scanner sc = new Scanner(System.in);
+        char ch = Character.toUpperCase(sc.next().charAt(0));
+        if (Character.isLetter(ch) && ch == 'Y') {
+            if (this.setData() == 1)
+                System.out.println("Details updated.");
+            else
+                System.out.println("Error in updating details.");
+        } else {
+            do {
+                System.out.println("Enter choice");
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1: {
+                        System.out.println("Enter new name: ");
+                        name = sc.nextLine();
+                        break;
+                    }
+                    case 2: {
+                        System.out.println("Enter new age: ");
+                        age = sc.nextInt();
+                        break;
+                    }
+                    case 3: {
+                        System.out.println("Enter new phone number: ");
+                        phone = sc.nextLong();
+                        break;
+                    }
+                    case 4: {
+                        System.out.println("Enter new address: ");
+                        address = sc.nextLine();
+                        break;
+                    }
+                    default: {
+                        System.out.println("Wrong choice entered! Enter again.");
+                        continue;
+                    }
+                }
+            } while (false);
+        }
+
+        sc.close();
         return flag;
     }
-    /*
-     * private int deleteAccount() {
-     * 
-     * }
-     */
 
     private void withdraw(double amount) {
         this.balance = this.balance - amount;
@@ -149,71 +190,76 @@ public class Bank {
     public static void main(String[] args) {
         Bank bank = new Bank();
 
-        System.out.println("Choose an option from below to perform.");
-        System.out.println("#1 - Create new bank account");
-        System.out.println("#2 - Print account details");
-        System.out.println("#3 - Withdraw amount from account");
-        System.out.println("#4 - Deposit amount into account");
-        System.out.println("#5 - Update details");
-        System.out.println("#6 - Delete account");
-        System.out.println("Enter your choice: ");
-
         Scanner sc = new Scanner(System.in);
-        int choice = sc.nextInt();
+        do {
+            System.out.println("Choose an option from below to perform.");
+            System.out.println("#1 - Create new bank account");
+            System.out.println("#2 - Print account details");
+            System.out.println("#3 - Withdraw amount from account");
+            System.out.println("#4 - Deposit amount into account");
+            System.out.println("#5 - Update details");
+            System.out.println("#6 - Delete account");
+            System.out.println("Enter your choice: ");
 
-        switch (choice) {
-            case 1: {
-                if (bank.createAccount() == 1)
-                    System.out.println("New Account created successfully.");
-                else
-                    System.out.println("Error in creating account! Try again later.");
-                break;
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1: {
+                    if (bank.createAccount() == 1)
+                        System.out.println("New Account created successfully.");
+                    else
+                        System.out.println("Error in creating account! Try again later.");
+                    break;
+                }
+                case 2: {
+                    if (bank.printDetails() != 1)
+                        System.out.println("Error in printing details! Try again later.");
+                    break;
+                }
+                case 3: {
+                    System.out.println("Enter the amount to be withdrawen:");
+                    double amount;
+                    do {
+                        amount = sc.nextDouble();
+                        if (amount == 0)
+                            System.out.println("Withdraw amount cannot be 0! Enter withdraw amount again.");
+                        else if (amount < 0)
+                            System.out.println("Withdraw amount cannot be negative! Enter withdraw amount again.");
+                        else if (amount == bank.balance && bank.accountType != 'S' && bank.accountType != 's')
+                            System.out.println("Balance cannot be zero for this account! Enter withdraw amount again.");
+                        else {
+                            bank.withdraw(amount);
+                            break;
+                        }
+                    } while (true);
+                    break;
+                }
+                case 4: {
+                    System.out.println("Enter the amount to be deposited:");
+                    double amount;
+                    do {
+                        amount = sc.nextDouble();
+                        if (amount == 0)
+                            System.out.println("Deposit amount cannot be 0! Enter deposit amount again.");
+                        else if (amount < 0)
+                            System.out.println("Deposit amount cannot be negative! Enter deposit amount again.");
+                        else {
+                            bank.deposit(amount);
+                            break;
+                        }
+                    } while (true);
+                    break;
+                }
+                case 5: {
+                    if (bank.update() != 1)
+                        System.out.println("Error updating user details! Please try again later.");
+                    break;
+                }
+                default: {
+                    continue;
+                }
             }
-            case 2: {
-                if (bank.printDetails() != 1)
-                    System.out.println("Error in printing details! Try again later.");
-                break;
-            }
-            case 3: {
-                System.out.println("Enter the amount to be withdrawen:");
-                double amount;
-                do {
-                    amount = sc.nextDouble();
-                    if (amount == 0)
-                        System.out.println("Withdraw amount cannot be 0! Enter withdraw amount again.");
-                    else if (amount < 0)
-                        System.out.println("Withdraw amount cannot be negative! Enter withdraw amount again.");
-                    else if (amount == bank.balance && bank.accountType != 'S' && bank.accountType != 's')
-                        System.out.println("Balance cannot be zero for this account! Enter withdraw amount again.");
-                    else {
-                        bank.withdraw(amount);
-                        break;
-                    }
-                } while (true);
-                break;
-            }
-            case 4: {
-                System.out.println("Enter the amount to be deposited:");
-                double amount;
-                do {
-                    amount = sc.nextDouble();
-                    if (amount == 0)
-                        System.out.println("Deposit amount cannot be 0! Enter deposit amount again.");
-                    else if (amount < 0)
-                        System.out.println("Deposit amount cannot be negative! Enter deposit amount again.");
-                    else {
-                        bank.deposit(amount);
-                        break;
-                    }
-                } while (true);
-                break;
-            }
-            case 5: {
-                if (bank.update() != 1)
-                    System.out.println("Error updating user details! Please try again later.");
-                break;
-            }
-        }
+        } while (false);
         sc.close();
     }
 }
