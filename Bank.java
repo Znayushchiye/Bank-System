@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class Bank {
     private String name, address;
     private double balance;
@@ -57,7 +59,7 @@ public class Bank {
         System.out.print("Enter your age: ");
         do {
             age = sc.nextInt();
-            if (age < 15)
+            if (age < 16)
                 System.out.println("Age must be older than 15! Enter again.");
             else
                 break;
@@ -65,11 +67,12 @@ public class Bank {
 
         System.out.print("Enter your account type: ");
         do {
-            accountType = sc.next().trim().charAt(0);
-            if ("SsTtLl".indexOf(accountType) == -1)
+            accountType = Character.toUpperCase(sc.next().trim().charAt(0));
+            if ("STL".indexOf(accountType) == -1)
                 System.out.println("Enter 'S' for Savings, 'L' for Salary or 'T' for Student only!");
-            else if (("Ss".indexOf(accountType) == -1 && age < 18) || ("Ss".indexOf(accountType) != -1) && age > 17) {
-                System.out.println("Student account type possible only for ages between 15 and 17! Enter age again?");
+            else if ((accountType != 'S' && age < 18) || (accountType == 'S' && age > 17)) {
+                System.out.println(
+                        "Student account type possible only for ages between 15 and 17! Enter age again? (y/n)");
                 if (Character.toUpperCase(sc.next().trim().charAt(0)) == 'Y') {
                     System.out.println("Enter age again:");
                     age = sc.nextInt();
@@ -126,7 +129,7 @@ public class Bank {
 
         Scanner sc = new Scanner(System.in);
         char ch = Character.toUpperCase(sc.next().charAt(0));
-        if (Character.isLetter(ch) && ch == 'Y') {
+        if (ch == 'Y') {
             if (this.setData() == 1)
                 System.out.println("Details updated.");
             else
@@ -134,8 +137,7 @@ public class Bank {
         } else {
             do {
                 System.out.println("Enter choice");
-                int choice = sc.nextInt();
-                switch (choice) {
+                switch (sc.nextInt()) {
                     case 1: {
                         System.out.println("Enter new name: ");
                         name = sc.nextLine();
@@ -163,7 +165,6 @@ public class Bank {
                 }
             } while (false);
         }
-
         sc.close();
         return flag;
     }
@@ -185,6 +186,18 @@ public class Bank {
         if (this.getData() != 1)
             return 0;
         return 1;
+    }
+
+    private void transfer(Bank sender, Bank target, double amount) {
+        if (sender.balance - amount < 0)
+            System.out.println("Balance too low! Cannot transfer Rs." + amount);
+        else if (sender.balance - amount == 0 && sender.accountType != 'T')
+            System.out.println("Zero balance is possible only for Student account type! Cannot transfer Rs." + amount);
+        else {
+            sender.balance -= amount;
+            target.balance += amount;
+            System.out.println("Rs. " + amount + " transferred successfully.");
+        }
     }
 
     public static void main(String[] args) {
